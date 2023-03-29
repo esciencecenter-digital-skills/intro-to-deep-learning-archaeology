@@ -332,13 +332,16 @@ For this episode we will keep it at just a training and test set however.
 
 To split the cleaned dataset into a training and test set we will use a very convenient
 function from sklearn called `train_test_split`.
-This function takes a number of parameters:
-- The first two are the dataset and the corresponding targets.
+The output of the function are:
+- the input features of the dataset for training (`X_train`) and testing (`X_test`) and the corresponding training targets (`y_train`) and test targets (`y_test`).
+
+This function takes a number of input parameters:
+- The first two are the dataset (i.e. features) and the corresponding targets.
 - Next is the named parameter `test_size` this is the fraction of the dataset that is
 used for testing, in this case `0.2` means 20% of the data will be used for testing.
 - `random_state` controls the shuffling of the dataset, setting this value will reproduce
 the same results (assuming you give the same integer) every time it is called.
-- `shuffle` which can be either `True` or `False`, it controls whether the order of the rows of the dataset is shuffled before splitting. It defaults to `True`.
+- `shuffle` which can be either `True` or `False`, it controls whether the order of the rows of the dataset is shuffled before splitting. It defaults to `True`. Note that it shuffles the rows but keeps the integrity of each row.
 - `stratify` is a more advanced parameter that controls how the split is done. By setting it to `target` the train and test sets the function will return will have roughly the same proportions (with regards to the number of penguins of a certain species) as the dataset.
 
 ~~~
@@ -406,8 +409,7 @@ set_seed(2)
 
 ### Build a neural network from scratch
 
-Now we will build a neural network from scratch, and although this sounds like
-a daunting task, with Keras it is actually surprisingly straightforward.
+We will now build out first neural network from scratch. Although this sounds like a daunting task, you will experience that #with Keras it is actually surprisingly straightforward.
 
 With Keras you compose a neural network by creating layers and linking them
 together. For now we will only use one type of layer called a fully connected
@@ -687,8 +689,7 @@ Now that we have a trained neural network it is important to assess how well it 
 We want to know how well it will perform in a realistic prediction scenario, measuring
 performance will also come back when tuning the hyperparameters.
 
-We have created a test set during the data preparation stage which we will use
-now to create a confusion matrix.
+We have created a test set during the data preparation stage `X_test` and `y_test`, which we will use now to create a confusion matrix.
 
 ### Confusion matrix
 With the predicted classification we can now create a confusion matrix and display it
