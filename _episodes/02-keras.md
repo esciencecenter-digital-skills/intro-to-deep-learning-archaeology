@@ -60,7 +60,7 @@ In this episode we will focus on a minimal example for each of these steps, late
 > require a more complex Neural Network.
 {: .callout}
 ## 1. Formulate/outline the problem: penguin classification
-In this episode we will be using the [below the surface dataset]https://raw.githubusercontent.com/esciencecenter-digital-skills/deep-learning-archaeology/main/data/subset_ceramics_v29032023.csv), as presented before.
+In this episode we will be using the below the surface [dataset](https://raw.githubusercontent.com/esciencecenter-digital-skills/deep-learning-archaeology/main/data/subset_ceramics_v29032023.csv), as presented before.
 
 We will use this dataset to train a neural network which can classify the second level of the functional classification of the archeological find, based on certain features.
 
@@ -183,10 +183,11 @@ as input for the neural network and the target that we want to predict.
 > ## Choice of Input and Output=
 >
 > Inspect the dataset and identify suitable input features and output
-> > ## Solution'
-> > Columns `ceramics_reconstructed_object_diameter_in_mm` and `ceramics_reconstructed_object_height_in_mm` can be good features.
-> > Columns `ceramics_image_type` and `ceramics_mark` for example are not good features due to very high number of NaNs.
-> > Columns `start_date` and `end_date` are do not make good features as they are not related to the classification we want to achieve.
+> > ## Solution
+> > A few possible comments:
+> > - Columns `ceramics_reconstructed_object_diameter_in_mm` and `ceramics_reconstructed_object_height_in_mm` can be good features.
+> > - Columns `ceramics_image_type` and `ceramics_mark` for example are not good features due to very high number of NaNs.
+> > - Columns `start_date` and `end_date` are do not make good features as they are not related to the classification we want to achieve.
 > {:.solution}
 {:.challenge}
 
