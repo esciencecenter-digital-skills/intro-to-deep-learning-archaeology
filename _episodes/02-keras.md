@@ -59,7 +59,7 @@ In this episode we will focus on a minimal example for each of these steps, late
 > Using a GPU becomes necessary when tackling larger datasets or complex problems which
 > require a more complex Neural Network.
 {: .callout}
-## 1. Formulate/outline the problem: penguin classification
+## 1. Formulate/outline the problem: classification
 In this episode we will be using the below the surface [dataset](https://raw.githubusercontent.com/esciencecenter-digital-skills/deep-learning-archaeology/main/data/subset_ceramics_v29032023.csv), as presented before.
 
 We will use this dataset to train a neural network which can classify the second level of the functional classification of the archeological find, based on certain features.
@@ -277,7 +277,7 @@ Again there are many ways to do this, however we will be using the one-hot encod
 This encoding creates multiple columns, as many as there are unique values, and
 puts a 1 in the column with the corresponding correct class, and 0's in
 the other columns.
-For instance, for a penguin of the Adelie species the one-hot encoding would be 1 0 0
+For instance, for a classification of the `Consumption: drinking` type, the one-hot encoding would be 0 1
 
 Fortunately pandas is able to generate this encoding for us.
 ~~~
@@ -342,7 +342,7 @@ used for testing, in this case `0.2` means 20% of the data will be used for test
 - `random_state` controls the shuffling of the dataset, setting this value will reproduce
 the same results (assuming you give the same integer) every time it is called.
 - `shuffle` which can be either `True` or `False`, it controls whether the order of the rows of the dataset is shuffled before splitting. It defaults to `True`. Note that it shuffles the rows but keeps the integrity of each row.
-- `stratify` is a more advanced parameter that controls how the split is done. By setting it to `target` the train and test sets the function will return will have roughly the same proportions (with regards to the number of penguins of a certain species) as the dataset.
+- `stratify` is a more advanced parameter that controls how the split is done. By setting it to `target` the train and test sets the function will return will have roughly the same proportions (with regards to the number of second level classification) as the dataset.
 
 ~~~
 from sklearn.model_selection import train_test_split
@@ -363,7 +363,7 @@ X_train, X_test, y_train, y_test = train_test_split(ds_features, target,test_siz
 > >
 > > We can check the balance of classes by counting the number of ones for each
 > > of the columns in the one-hot-encoded target,
-> > which shows the training set has 121 Adelie, 98 Gentoo and 54 Chinstrap samples.
+> > which shows the training set has 699 data points for `Consumption: drinking`, and 1715 for `Food consumption: plate, dish, bowl`.
 > > ~~~
 > > y_train.sum()
 > > ~~~
