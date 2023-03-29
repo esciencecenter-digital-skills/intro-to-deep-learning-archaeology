@@ -154,22 +154,18 @@ This will give you a pandas dataframe which contains the data.
 > > ~~~
 > > {:.language-python}
 > > ~~~
-> > find_number                                         0
-> > material_category                                   0
-> > material                                            0
-> > start_date                                          0
-> > end_date                                            0
-> > level_1_of_the_functional_classification            0
-> > level_2_of_the_functional_classification            0
-> > ceramics_rim_eve_estimated_vessel_equivalent        7
-> > ceramics_base_eve_estimated_vessel_equivalent      72
-> > ceramics_reconstructed_object_diameter_in_mm        0
-> > ceramics_reconstructed_object_height_in_mm          0
-> > ceramics_surface_treatment                         52
-> > ceramics_decoration_technique                     751
-> > ceramics_image_type                              2413
-> > ceramics_mark                                    3308
-> > material_simplified                                 0
+> > find_number                                        0
+> > material                                           0
+> > start_date                                         0
+> > end_date                                           0
+> > level_2_of_the_functional_classification           0
+> > ceramics_reconstructed_object_diameter_in_mm       0
+> > ceramics_reconstructed_object_height_in_mm         0
+> > ceramics_image_type                             2413
+> > ceramics_mark                                   3308
+> > on_website                                         0
+> > material_simplified                                0
+> > url                                             2652
 > > dtype: int64
 > > ~~~
 > > {:.output}
@@ -203,12 +199,8 @@ The target for the classification task will be the `level_2_of_the_functional_cl
 ### Remove unnecessary columns of data
 The dataset currently contains a lot of redundant or unnecessary data columns. We will remove all columns except our input and output columns. 
 ~~~
-ds_preprocessed = ds.drop(columns=['find_number', 'material_category', 'material', 'start_date',
-       'end_date', 'level_1_of_the_functional_classification',
-       'ceramics_rim_eve_estimated_vessel_equivalent',
-       'ceramics_base_eve_estimated_vessel_equivalent',
-       'ceramics_decoration_technique',
-       'ceramics_image_type', 'ceramics_mark', 'ceramics_surface_treatment'])
+ds_preprocessed = ds.drop(columns=['find_number', 'material', 'start_date',
+       'end_date', 'ceramics_image_type', 'ceramics_mark', 'on_website', 'url'])
 ~~~
 {:.language-python}
 
