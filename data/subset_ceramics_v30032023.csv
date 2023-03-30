@@ -1,4 +1,4 @@
-"find_number","material","start_date","end_date","level_2_of_the_functional_classification","ceramics_reconstructed_object_diameter_in_mm","ceramics_reconstructed_object_height_in_mm","ceramics_image_type","ceramics_mark","on_website","material_simplified","url"
+"find_number","material","start_date","end_date","l2_class","object_diameter","object_height","ceramics_image_type","ceramics_mark","on_website","material_simplified","url"
 "NZR2.00257CER066","industrial ware: white",1775,1850,"Consumption: drinking",95.0,55.0,NULL,NULL,0,"industrial ware",NULL
 "NZR2.00514CER247","faience: Holland",1750,1825,"Consumption: drinking",95.0,60.0,NULL,NULL,0,"faience",NULL
 "NZR2.00520CER080","porcelain: Europe",1850,1900,"Consumption: drinking",90.0,55.0,NULL,NULL,0,"porcelain",NULL
