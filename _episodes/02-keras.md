@@ -82,7 +82,7 @@ import pandas as pd
 
 We can load the dataset using
 ~~~
-ds = pd.read_csv('subset_ceramics_v29032023.csv')
+ds = pd.read_csv('subset_ceramics_v30032023.csv')
 ~~~
 {:.language-python}
 
@@ -115,12 +115,12 @@ This will give you a pandas dataframe which contains the data.
 > > ~~~
 > > {:.language-python}
 > >
-> > **2.** We can get the unique values in the `level_2_of_the_functional_classification` column using the `unique` function of pandas.
+> > **2.** We can get the unique values in the `l2_class` column using the `unique` function of pandas.
 > > It shows the target class is stored as a string and has 3 unique values. This type of column is
 > > usually called a 'categorical' column.
 > >
 > > ~~~
-> > ds["level_2_of_the_functional_classification"].unique()
+> > ds["l2_class"].unique()
 > > ~~~
 > > {:.language-python}
 > > ~~~
@@ -136,7 +136,7 @@ This will give you a pandas dataframe which contains the data.
 > > **3.** Using `describe` function on this column shows there are 3410 samples with 7
 > > unique classifications.
 > > ~~~
-> > ds["level_2_of_the_functional_classification"].describe()
+> > ds["l2_class"].describe()
 > > ~~~
 > > {:.language-python}
 > > ~~~
@@ -144,13 +144,13 @@ This will give you a pandas dataframe which contains the data.
 > > unique                                      7
 > > top       Food consumption: plate, dish, bowl
 > > freq                                     2144
-> > Name: level_2_of_the_functional_classification, dtype: object
+> > Name: l2_class, dtype: object
 > > ~~~
 > > {:.output}
 > >
 > > **4.** Using a combination of `isna` and `sum` function on the dataset shows that some columns have a lot of NaNs.
 > > ~~~
-> > ds["level_2_of_the_functional_classification"].describe()
+> > ds["l2_class"].describe()
 > > ~~~
 > > {:.language-python}
 > > ~~~
@@ -158,9 +158,9 @@ This will give you a pandas dataframe which contains the data.
 > > material                                           0
 > > start_date                                         0
 > > end_date                                           0
-> > level_2_of_the_functional_classification           0
-> > ceramics_reconstructed_object_diameter_in_mm       0
-> > ceramics_reconstructed_object_height_in_mm         0
+> > l2_class           0
+> > object_diameter       0
+> > object_height         0
 > > ceramics_image_type                             2413
 > > ceramics_mark                                   3308
 > > on_website                                         0
@@ -181,14 +181,14 @@ as input for the neural network and the target that we want to predict.
 > Inspect the dataset and identify suitable input features and output
 > > ## Solution
 > > A few possible comments:
-> > - Columns `ceramics_reconstructed_object_diameter_in_mm` and `ceramics_reconstructed_object_height_in_mm` can be good features.
+> > - Columns `object_diameter` and `object_height` can be good features.
 > > - Columns `ceramics_image_type` and `ceramics_mark` for example are not good features due to very high number of NaNs.
 > > - Columns `start_date` and `end_date` are do not make good features as they are not related to the classification we want to achieve.
 > {:.solution}
 {:.challenge}
 
-In the rest of this episode we will use the `ceramics_reconstructed_object_diameter_in_mm`, `ceramics_reconstructed_object_height_in_mm`, `material_simplified` attributes.
-The target for the classification task will be the `level_2_of_the_functional_classification`.
+In the rest of this episode we will use the `object_diameter`, `object_height`, `material_simplified` attributes.
+The target for the classification task will be the `l2_class`.
 
 > ## Data Exploration
 > Exploring the data is an important step to familiarize yourself with the problem and to help you
@@ -221,7 +221,7 @@ ds_preprocessed = ds_preprocessed.dropna()
 > This can be created using `sns.pairplot(...)` which can be imported from the seaborn package. It shows a scatterplot of each attribute plotted against each of the other attributes.
 > ~~~
 > import seaborn as sns
-> sns.pairplot(ds_preprocessed, hue = 'level_2_of_the_functional_classification')
+> sns.pairplot(ds_preprocessed, hue = 'l2_class')
 > ~~~
 > {:.language-python}
 > ![Pairplot for our dataset][pairplot]
@@ -229,7 +229,7 @@ ds_preprocessed = ds_preprocessed.dropna()
 ### Simplify output
 Let's explore the output classification column by looking at the number of data rows for each unique classification using the `value_counts` pandas function.
 ~~~
-ds_preprocessed['level_2_of_the_functional_classification'].value_counts()
+ds_preprocessed['l2_class'].value_counts()
 ~~~
 {:.language-python}
 ~~~
@@ -240,20 +240,20 @@ Food preparation and consumption: various parts of kitchenware     107
 Consumption of food and drinks: table accessories                   24
 Consumption of tobacco and stimulants                                4
 Food consumption: cutlery and tools                                  2
-Name: level_2_of_the_functional_classification, dtype: int64
+Name: l2_class, dtype: int64
 ~~~
 {:.output}
 
 There are two categories with notable data points in `Food consumption: plate, dish, bowl` and `Consumption: drinking`. We will focus on these for our neural network. To remove the others we will query the pandas dataframe.
 ~~~
-ds_preprocessed = ds_preprocessed.query("level_2_of_the_functional_classification == ['Consumption: drinking', 'Food consumption: plate, dish, bowl']")  
+ds_preprocessed = ds_preprocessed.query("l2_class == ['Consumption: drinking', 'Food consumption: plate, dish, bowl']")  
 ~~~
 
 ### Change output type if needed
 The output column is our categorical target, however pandas still sees it as the
 generic type `Object`. We can convert this to the pandas categorical type:
 ~~~
-ds_preprocessed['level_2_of_the_functional_classification'] = ds_preprocessed['level_2_of_the_functional_classification'].astype('category')
+ds_preprocessed['l2_class'] = ds_preprocessed['l2_class'].astype('category')
 ~~~
 {:.language-python}
 This will make later interaction with this column a little easier.
@@ -275,13 +275,13 @@ Fortunately pandas is able to generate this encoding for us.
 ~~~
 import pandas as pd
 
-target = pd.get_dummies(ds_preprocessed['level_2_of_the_functional_classification'])
+target = pd.get_dummies(ds_preprocessed['l2_class'])
 target.head() # print out the top 5 to see what it looks like.
 ~~~
 {:.language-python}
 
 ### Prepare input data for training
-Similar to the target column `level_2_of_the_functional_classification`, we also have the `material_simplified` feature column which is a string and needs to be one-hot encoded. Let us first look at the unique values in the column.
+Similar to the target column `l2_class`, we also have the `material_simplified` feature column which is a string and needs to be one-hot encoded. Let us first look at the unique values in the column.
 ~~~
 ds_preprocessed['material_simplified'].unique()
 ~~~
@@ -293,7 +293,7 @@ ds_features = pd.get_dummies(ds_preprocessed['material_categorized'])
 
 Let us now combine all the features to create one input feature dataset
 ~~~
-ds_features = ds_features.join(ds_preprocessed.drop(columns=['level_2_of_the_functional_classification', 'material_simplified', 'material_categorized']))
+ds_features = ds_features.join(ds_preprocessed.drop(columns=['l2_class', 'material_simplified', 'material_categorized']))
 ~~~
 
 > ## One-hot encoding vs ordinal encoding
