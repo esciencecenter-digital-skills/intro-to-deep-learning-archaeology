@@ -150,22 +150,22 @@ This will give you a pandas dataframe which contains the data.
 > >
 > > **4.** Using a combination of `isna` and `sum` function on the dataset shows that some columns have a lot of NaNs.
 > > ~~~
-> > ds["l2_class"].describe()
+> > ds.isna().sum()
 > > ~~~
 > > {:.language-python}
 > > ~~~
-> > find_number                                        0
-> > material                                           0
-> > start_date                                         0
-> > end_date                                           0
-> > l2_class           0
-> > object_diameter       0
-> > object_height         0
-> > ceramics_image_type                             2413
-> > ceramics_mark                                   3308
-> > on_website                                         0
-> > material_simplified                                0
-> > url                                             2652
+> > find_number               0
+> > material                  0
+> > start_date                0
+> > end_date                  0
+> > l2_class                  0
+> > object_diameter           0
+> > object_height             0
+> > ceramics_image_type    2413
+> > ceramics_mark          3308
+> > on_website                0
+> > material_simplified       0
+> > url                    2652
 > > dtype: int64
 > > ~~~
 > > {:.output}
@@ -199,8 +199,7 @@ The target for the classification task will be the `l2_class`.
 ### Remove unnecessary columns of data
 The dataset currently contains a lot of redundant or unnecessary data columns. We will remove all columns except our input and output columns. 
 ~~~
-ds_preprocessed = ds.drop(columns=['find_number', 'material', 'start_date',
-       'end_date', 'ceramics_image_type', 'ceramics_mark', 'on_website', 'url'])
+ds_preprocessed = ds[['l2_class', 'object_diameter', 'object_height', 'material_simplified']]
 ~~~
 {:.language-python}
 
@@ -248,6 +247,7 @@ There are two categories with notable data points in `Food consumption: plate, d
 ~~~
 ds_preprocessed = ds_preprocessed.query("l2_class == ['Consumption: drinking', 'Food consumption: plate, dish, bowl']")  
 ~~~
+{:.language-python}
 
 ### Change output type if needed
 The output column is our categorical target, however pandas still sees it as the
@@ -273,8 +273,6 @@ For instance, for a classification of the `Consumption: drinking` type, the one-
 
 Fortunately pandas is able to generate this encoding for us.
 ~~~
-import pandas as pd
-
 target = pd.get_dummies(ds_preprocessed['l2_class'])
 target.head() # print out the top 5 to see what it looks like.
 ~~~
