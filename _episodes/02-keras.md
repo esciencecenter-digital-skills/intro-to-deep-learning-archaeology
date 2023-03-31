@@ -82,7 +82,7 @@ import pandas as pd
 
 We can load the dataset using
 ~~~
-ds = pd.read_csv('subset_ceramics_v30032023.csv')
+ds = pd.read_csv('data/subset_ceramics_v30032023.csv')
 ~~~
 {:.language-python}
 
