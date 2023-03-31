@@ -285,17 +285,19 @@ Similar to the target column `l2_class`, we also have the `material_simplified` 
 ~~~
 ds_preprocessed['material_simplified'].unique()
 ~~~
+{:.language-python}
 Let us now convert the string input in to a categorical input and perform the one-hot encoding of the results.
 ~~~
 ds_preprocessed['material_categorized'] = ds_preprocessed['material_simplified'].astype('category')
 ds_features = pd.get_dummies(ds_preprocessed['material_categorized'])
 ~~~
+{:.language-python}
 
 Let us now combine all the features to create one input feature dataset
 ~~~
 ds_features = ds_features.join(ds_preprocessed.drop(columns=['l2_class', 'material_simplified', 'material_categorized']))
 ~~~
-
+{:.language-python}
 > ## One-hot encoding vs ordinal encoding
 >
 > 1. How many output neurons will our network have now that we
