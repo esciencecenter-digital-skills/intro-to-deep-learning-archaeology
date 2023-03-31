@@ -59,141 +59,116 @@ In this episode we will focus on a minimal example for each of these steps, late
 > Using a GPU becomes necessary when tackling larger datasets or complex problems which
 > require a more complex Neural Network.
 {: .callout}
-## 1. Formulate/outline the problem: penguin classification
-In this episode we will be using the [penguin dataset](https://zenodo.org/record/3960218), this is a dataset that was published in 2020 by Allison Horst and contains data on three different species of the penguins.
+## 1. Formulate/outline the problem: classification
+In this episode we will be using the below the surface [dataset](https://raw.githubusercontent.com/esciencecenter-digital-skills/deep-learning-archaeology/main/data/subset_ceramics_v29032023.csv), as presented before.
 
-We will use the penguin dataset to train a neural network which can classify which species a
-penguin belongs to, based on their physical characteristics.
+We will use this dataset to train a neural network which can classify the second level of the functional classification of the archeological find, based on certain features.
+
 > ## Goal
-> The goal is to predict a penguins' species using the attributes available in this dataset.
+> The goal is to predict the second level of functional classification using the attributes available in this dataset.
 {: .objectives}
-
-The `palmerpenguins` data contains size measurements for three penguin species observed on three islands in the Palmer Archipelago, Antarctica.
-The physical attributes measured are flipper length, beak length, beak width, body mass, and sex.
-
-![Illustration of the three species of penguins found in the Palmer Archipelago, Antarctica: Chinstrap, Gentoo and Adele][palmer-penguins]
-*Artwork by @allison_horst*
-
-![Illustration of the beak dimensions called culmen length and culmen depth in the dataset][penguin-beaks]
-*Artwork by @allison_horst*
-
-These data were collected from 2007 - 2009 by Dr. Kristen Gorman with the [Palmer Station Long Term Ecological Research Program](https://pal.lternet.edu/), part of the [US Long Term Ecological Research Network](https://lternet.edu/). The data were imported directly from the [Environmental Data Initiative](https://environmentaldatainitiative.org/) (EDI) Data Portal, and are available for use by CC0 license ("No Rights Reserved") in accordance with the [Palmer Station Data Policy](https://pal.lternet.edu/data/policies).
 
 ## 2. Identify inputs and outputs
 To identify the inputs and outputs that we will use to design the neural network we need to familiarize
 ourselves with the dataset. This step is sometimes also called data exploration.
 
-We will start by importing the [Seaborn](https://seaborn.pydata.org/) library that will help us get the dataset and visualize it.
-Seaborn is a powerful library with many visualizations. Keep in mind it requires the data to be in a
-pandas dataframe, luckily the datasets available in seaborn are already in a pandas dataframe.
+We will start by importing the [pandas](https://pandas.pydata.org/) library that will help us read the dataset from the .csv file.
+Pandas is a fast, powerful, flexible and easy to use open source data analysis and manipulation tool, built on top of the Python programming language.
 
 ~~~
-import seaborn as sns
-~~~
-{:.language-python}
-
-We can load the penguin dataset using
-~~~
-penguins = sns.load_dataset('penguins')
+import pandas as pd
 ~~~
 {:.language-python}
 
-This will give you a pandas dataframe which contains the penguin data.
+We can load the dataset using
+~~~
+ds = pd.read_csv('data/subset_ceramics_v30032023.csv')
+~~~
+{:.language-python}
 
-> ## Penguin Dataset
+This will give you a pandas dataframe which contains the data.
+
+> ## Inspect Dataset
 >
-> Inspect the penguins dataset.
+> Inspect the dataset.
 > 1. What are the different features called in the dataframe?
 > 2. Are the target classes of the dataset stored as numbers or strings?
 > 3. How many samples does this dataset have?
+> 4. How many NaN (Not a Number) are there for each feature?
+> Tip: Use pandas functions:
+> [head](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.head.html)
+> [describe](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.describe.html)
+> [unique](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.unique.html)
+> [isna](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.isna.html)
+> [sum](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.sum.html)
 >
 > > ## Solution
 > > **1.** Using the pandas `head` function you can see the names of the features.
 > > Using the `describe` function we can also see some statistics for the numeric columns
 > > ~~~
-> > penguins.head()
+> > ds.head()
 > > ~~~
 > > {:.language-python}
 > >
-> > |       | species | island | bill_length_mm | bill_depth_mm | flipper_length_mm | body_mass_g | sex |
-> > |------:|---------------:|--------------:|------------------:|------------:|------------:|------------:|------------:|
-> > | 0 | Adelie | Torgersen | 39.1 | 18.7 | 181.0 | 3750.0 | Male   |
-> > | 1 | Adelie | Torgersen | 39.5 | 17.4 | 186.0 | 3800.0 | Female |
-> > | 2 | Adelie | Torgersen | 40.3 | 18.0 | 195.0 | 3250.0 | Female |
-> > | 3 | Adelie | Torgersen | NaN  | NaN  | NaN   | NaN    | NaN    |
-> > | 4 | Adelie | Torgersen | 36.7 | 19.3 | 193.0 | 3450.0 | Female |
-> >
 > > ~~~
-> > penguins.describe()
+> > ds.describe()
 > > ~~~
 > > {:.language-python}
 > >
-> > |       | bill_length_mm | bill_depth_mm | flipper_length_mm | body_mass_g |
-> > |------:|---------------:|--------------:|------------------:|------------:|
-> > | count |     342.000000 |    342.000000 |        342.000000 |  342.000000 |
-> > |  mean |      43.921930 |     17.151170 |        200.915205 | 4201.754386 |
-> > |   std |       5.459584 |      1.974793 |         14.061714 |  801.954536 |
-> > |   min |      32.100000 |     13.100000 |        172.000000 | 2700.000000 |
-> > |   25% |      39.225000 |     15.600000 |        190.000000 | 3550.000000 |
-> > |   50% |      44.450000 |     17.300000 |        197.000000 | 4050.000000 |
-> > |   75% |      48.500000 |     18.700000 |        213.000000 | 4750.000000 |
-> > |   max |      59.600000 |     21.500000 |        231.000000 | 6300.000000 |
-> >
-> > **2.** We can get the unique values in the `species` column using the `unique` function of pandas.
+> > **2.** We can get the unique values in the `l2_class` column using the `unique` function of pandas.
 > > It shows the target class is stored as a string and has 3 unique values. This type of column is
 > > usually called a 'categorical' column.
 > >
 > > ~~~
-> > penguins["species"].unique()
+> > ds["l2_class"].unique()
 > > ~~~
 > > {:.language-python}
 > > ~~~
-> > array(['Adelie', 'Chinstrap', 'Gentoo'], dtype=object)
+> > array(['Food consumption: plate, dish, bowl', 'Consumption: drinking',
+> >      'Food preparation: cooking - and hearth utensils',
+> >       'Food preparation and consumption: various parts of kitchenware',
+> >       'Consumption of tobacco and stimulants',
+> >       'Consumption of food and drinks: table accessories',
+> >       'Food consumption: cutlery and tools'], dtype=object)
 > > ~~~
 > > {:.output}
 > >
-> > **3.** Using `describe` function on the species column shows there are 344 samples
-> > unique species
+> > **3.** Using `describe` function on this column shows there are 3410 samples with 7
+> > unique classifications.
 > > ~~~
-> > penguins["species"].describe()
+> > ds["l2_class"].describe()
 > > ~~~
 > > {:.language-python}
 > > ~~~
-> > count        344
-> > unique         3
-> > top       Adelie
-> > freq         152
-> > Name: species, dtype: object
+> > count                                    3410
+> > unique                                      7
+> > top       Food consumption: plate, dish, bowl
+> > freq                                     2144
+> > Name: l2_class, dtype: object
 > > ~~~
 > > {:.output}
-> {:.solution}
-{:.challenge}
-
-### Visualization
-Looking at numbers like this usually does not give a very good intuition about the data we are
-working with, so let us create a visualization.
-#### Pair Plot
-One nice visualization for datasets with relatively few attributes is the Pair Plot.
-This can be created using `sns.pairplot(...)`. It shows a scatterplot of each attribute plotted against each of the other attributes.
-By using the `hue='species'` setting for the pairplot the graphs on the diagonal are layered kernel density estimate plots for the different values of the `species` column.
-
-~~~
-sns.pairplot(penguins, hue="species")
-~~~
-{:.language-python}
-![Pair plot showing the separability of the three species of penguin for combinations of dataset attributes][pairplot]
-
-> ## Pairplot
->
-> Take a look at the pairplot we created. Consider the following questions:
->
-> * Is there any class that is easily distinguishable from the others?
-> * Which combination of attributes shows the best separation for all 3 class labels at once?
->
-> > ## Solution
-> > The plots show that the green class, Gentoo is somewhat more easily distinguishable from the other two.
-> > The other two seem to be separable by a combination of bill length and bill
-> > depth (other combinations are also possible such as bill length and flipper length).
+> >
+> > **4.** Using a combination of `isna` and `sum` function on the dataset shows that some columns have a lot of NaNs.
+> > ~~~
+> > ds.isna().sum()
+> > ~~~
+> > {:.language-python}
+> > ~~~
+> > find_number               0
+> > material                  0
+> > start_date                0
+> > end_date                  0
+> > l2_class                  0
+> > object_diameter           0
+> > object_height             0
+> > ceramics_image_type    2413
+> > ceramics_mark          3308
+> > on_website                0
+> > material_simplified       0
+> > url                    2652
+> > dtype: int64
+> > ~~~
+> > {:.output}
 > {:.solution}
 {:.challenge}
 
@@ -201,37 +176,87 @@ sns.pairplot(penguins, hue="species")
 Now that we have familiarized ourselves with the dataset we can select the data attributes to use
 as input for the neural network and the target that we want to predict.
 
-In the rest of this episode we will use the `bill_length_mm`, `bill_depth_mm`, `flipper_length_mm`, `body_mass_g` attributes.
-The target for the classification task will be the `species`.
+> ## Choice of Input and Output
+>
+> Inspect the dataset and identify suitable input features and output
+> > ## Solution
+> > A few possible comments:
+> > - Columns `object_diameter` and `object_height` can be good features.
+> > - Columns `ceramics_image_type` and `ceramics_mark` for example are not good features due to very high number of NaNs.
+> > - Columns `start_date` and `end_date` are do not make good features as they are not related to the classification we want to achieve.
+> {:.solution}
+{:.challenge}
+
+In the rest of this episode we will use the `object_diameter`, `object_height`, `material_simplified` attributes.
+The target for the classification task will be the `l2_class`.
 
 > ## Data Exploration
 > Exploring the data is an important step to familiarize yourself with the problem and to help you
 > determine the relevant inputs and outputs.
 {:.keypoints}
 ## 3. Prepare data
-The input data and target data are not yet in a format that is suitable to use for training a neural network.
 
-### Change types if needed
-First, the species column is our categorical target, however pandas still sees it as the
-generic type `Object`. We can convert this to the pandas categorical type:
+### Remove unnecessary columns of data
+The dataset currently contains a lot of redundant or unnecessary data columns. We will remove all columns except our input and output columns. 
 ~~~
-penguins['species'] = penguins['species'].astype('category')
+ds_preprocessed = ds[['l2_class', 'object_diameter', 'object_height', 'material_simplified']]
 ~~~
 {:.language-python}
-This will make later interaction with this column a little easier.
+
+The input data and target data are not yet in a format that is suitable to use for training a neural network.
 
 ### Clean missing values
-During the exploration phase you may have noticed that some rows in the dataset have missing (NaN)
+During the exploration phase we saw that some rows in the dataset have missing (NaN)
 values, leaving such values in the input data will ruin the training, so we need to deal with them.
 There are many ways to deal with missing values, but for now we will just remove the offending rows by adding a call to `dropna()`:
 ~~~
-# Drop two columns and the rows that have NaN values in them
-penguins_filtered = penguins.drop(columns=['island', 'sex']).dropna()
-
-# Extract columns corresponding to features
-penguins_features = penguins_filtered.drop(columns=['species'])
+# Drop the rows that have NaN values in them
+ds_preprocessed = ds_preprocessed.dropna()
 ~~~
 {:.language-python}
+
+> ## Pairplot: Visual Aid
+> Looking at numbers on a screen usually does not give a very good intuition about the data we are working with. So let us use a visualization tool called Pairplot which is useful for datasets with relatively few attributes.
+> This can be created using `sns.pairplot(...)` which can be imported from the seaborn package. It shows a scatterplot of each attribute plotted against each of the other attributes.
+> ~~~
+> import seaborn as sns
+> sns.pairplot(ds_preprocessed, hue = 'l2_class')
+> ~~~
+> {:.language-python}
+> ![Pairplot for our dataset][pairplot]
+
+### Simplify output
+Let's explore the output classification column by looking at the number of data rows for each unique classification using the `value_counts` pandas function.
+~~~
+ds_preprocessed['l2_class'].value_counts()
+~~~
+{:.language-python}
+~~~
+Food consumption: plate, dish, bowl                               2144
+Consumption: drinking                                              874
+Food preparation: cooking - and hearth utensils                    255
+Food preparation and consumption: various parts of kitchenware     107
+Consumption of food and drinks: table accessories                   24
+Consumption of tobacco and stimulants                                4
+Food consumption: cutlery and tools                                  2
+Name: l2_class, dtype: int64
+~~~
+{:.output}
+
+There are two categories with notable data points in `Food consumption: plate, dish, bowl` and `Consumption: drinking`. We will focus on these for our neural network. To remove the others we will query the pandas dataframe.
+~~~
+ds_preprocessed = ds_preprocessed.query("l2_class == ['Consumption: drinking', 'Food consumption: plate, dish, bowl']")  
+~~~
+{:.language-python}
+
+### Change output type if needed
+The output column is our categorical target, however pandas still sees it as the
+generic type `Object`. We can convert this to the pandas categorical type:
+~~~
+ds_preprocessed['l2_class'] = ds_preprocessed['l2_class'].astype('category')
+~~~
+{:.language-python}
+This will make later interaction with this column a little easier.
 
 ### Prepare target data for training
 Second, the target data is also in a format that cannot be used in training.
@@ -244,17 +269,33 @@ Again there are many ways to do this, however we will be using the one-hot encod
 This encoding creates multiple columns, as many as there are unique values, and
 puts a 1 in the column with the corresponding correct class, and 0's in
 the other columns.
-For instance, for a penguin of the Adelie species the one-hot encoding would be 1 0 0
+For instance, for a classification of the `Consumption: drinking` type, the one-hot encoding would be 0 1
 
 Fortunately pandas is able to generate this encoding for us.
 ~~~
-import pandas as pd
-
-target = pd.get_dummies(penguins_filtered['species'])
+target = pd.get_dummies(ds_preprocessed['l2_class'])
 target.head() # print out the top 5 to see what it looks like.
 ~~~
 {:.language-python}
 
+### Prepare input data for training
+Similar to the target column `l2_class`, we also have the `material_simplified` feature column which is a string and needs to be one-hot encoded. Let us first look at the unique values in the column.
+~~~
+ds_preprocessed['material_simplified'].unique()
+~~~
+{:.language-python}
+Let us now convert the string input in to a categorical input and perform the one-hot encoding of the results.
+~~~
+ds_preprocessed['material_categorized'] = ds_preprocessed['material_simplified'].astype('category')
+ds_features = pd.get_dummies(ds_preprocessed['material_categorized'])
+~~~
+{:.language-python}
+
+Let us now combine all the features to create one input feature dataset
+~~~
+ds_features = ds_features.join(ds_preprocessed.drop(columns=['l2_class', 'material_simplified', 'material_categorized']))
+~~~
+{:.language-python}
 > ## One-hot encoding vs ordinal encoding
 >
 > 1. How many output neurons will our network have now that we
@@ -262,22 +303,12 @@ target.head() # print out the top 5 to see what it looks like.
 > 2. Another encoding method is 'ordinal encoding'.
 >    Here the variable is represented by a single column,
 >    where each category is represented by a different integer
->    (0, 1, 2 in the case of the 3 penguin species).
+>    (0, 1 in this case).
 >    How many output neurons will a network have when ordinal encoding is used?
-> 3. (Optional) What would be the advantage of using one-hot versus ordinal encoding
->    for the task of classifying penguin species?
 >
 > > ## Solution
-> > 1. 3, one for each output variable class
-> > 2. 1, the 3 classes are represented in a single variable
-> > 3. In this case there is no ordinal relationship between the different penguin species,
-> >    so it does not make sense to use ordinal encoding.
-> >    To give an intuition of how a machine learning model deals with ordinal encoding:
-> >    Let us say that the model predicted 0 (Gentoo) instead of the true value 2 (Adélie),
-> >    the error would in this case be 2 (2-0). But if the prediction would be 1 (Chinstrap),
-> >    the error would be 1 (2-1). A missclassification between Gentoo and Adélie would then
-> >    thus contribute more to the overall error than missclassificaiton between Chinstrap and Adélie!
-> >
+> > 1. 2, one for each output variable class
+> > 2. 1, the 2 classes are represented in a single variable
 > {:.solution}
 {:.challenge}
 
@@ -293,19 +324,22 @@ For this episode we will keep it at just a training and test set however.
 
 To split the cleaned dataset into a training and test set we will use a very convenient
 function from sklearn called `train_test_split`.
-This function takes a number of parameters:
-- The first two are the dataset and the corresponding targets.
+The output of the function are:
+- the input features of the dataset for training (`X_train`) and testing (`X_test`) and the corresponding training targets (`y_train`) and test targets (`y_test`).
+
+This function takes a number of input parameters:
+- The first two are the dataset (i.e. features) and the corresponding targets.
 - Next is the named parameter `test_size` this is the fraction of the dataset that is
 used for testing, in this case `0.2` means 20% of the data will be used for testing.
 - `random_state` controls the shuffling of the dataset, setting this value will reproduce
 the same results (assuming you give the same integer) every time it is called.
-- `shuffle` which can be either `True` or `False`, it controls whether the order of the rows of the dataset is shuffled before splitting. It defaults to `True`.
-- `stratify` is a more advanced parameter that controls how the split is done. By setting it to `target` the train and test sets the function will return will have roughly the same proportions (with regards to the number of penguins of a certain species) as the dataset.
+- `shuffle` which can be either `True` or `False`, it controls whether the order of the rows of the dataset is shuffled before splitting. It defaults to `True`. Note that it shuffles the rows but keeps the integrity of each row.
+- `stratify` is a more advanced parameter that controls how the split is done. By setting it to `target` the train and test sets the function will return will have roughly the same proportions (with regards to the number of second level classification) as the dataset.
 
 ~~~
 from sklearn.model_selection import train_test_split
 
-X_train, X_test, y_train, y_test = train_test_split(penguins_features, target,test_size=0.2, random_state=0, shuffle=True, stratify=target)
+X_train, X_test, y_train, y_test = train_test_split(ds_features, target,test_size=0.2, random_state=0, shuffle=True, stratify=target)
 ~~~
 {:.language-python}
 
@@ -321,15 +355,14 @@ X_train, X_test, y_train, y_test = train_test_split(penguins_features, target,te
 > >
 > > We can check the balance of classes by counting the number of ones for each
 > > of the columns in the one-hot-encoded target,
-> > which shows the training set has 121 Adelie, 98 Gentoo and 54 Chinstrap samples.
+> > which shows the training set has 699 data points for `Consumption: drinking`, and 1715 for `Food consumption: plate, dish, bowl`.
 > > ~~~
 > > y_train.sum()
 > > ~~~
 > > {:.language-python}
 > > ~~~
-> > Adelie       121
-> > Chinstrap     54
-> > Gentoo        98
+> > Consumption: drinking                   699
+> > Food consumption: plate, dish, bowl    1715
 > > dtype: int64
 > > ~~~
 > > {:.output}
@@ -368,8 +401,7 @@ set_seed(2)
 
 ### Build a neural network from scratch
 
-Now we will build a neural network from scratch, and although this sounds like
-a daunting task, with Keras it is actually surprisingly straightforward.
+We will now build out first neural network from scratch. Although this sounds like a daunting task, you will experience that with Keras it is actually surprisingly straightforward.
 
 With Keras you compose a neural network by creating layers and linking them
 together. For now we will only use one type of layer called a fully connected
@@ -416,12 +448,12 @@ Finally we store a reference so we can pass it to the output layer in a minute.
 Now we create another layer that will be our output layer.
 Again we use a Dense layer and so the call is very similar to the previous one.
 ~~~
-output_layer = keras.layers.Dense(3, activation="softmax")(hidden_layer)
+output_layer = keras.layers.Dense(2, activation="softmax")(hidden_layer)
 ~~~
 {:.language-python}
-Because we chose the one-hot encoding, we use `3` neurons for the output layer.
+Because we chose the one-hot encoding, we use `2` neurons for the output layer.
 
-The softmax activation ensures that the three output neurons produce values in the range
+The softmax activation ensures that the two output neurons produce values in the range
 (0, 1) and they sum to 1.
 We can interpret this as a kind of 'probability' that the sample belongs to a certain
 species.
@@ -439,7 +471,7 @@ The model summary here can show you some information about the neural network we
 > ## Create the neural network
 >
 > With the code snippets above, we defined a Keras model with 1 hidden layer with
-> 10 neurons and an output layer with 3 neurons.
+> 10 neurons and an output layer with 2 neurons.
 >
 > * How many parameters does the resulting model have?
 > * What happens to the number of parameters if we increase or decrease the number of neurons
@@ -449,7 +481,7 @@ The model summary here can show you some information about the neural network we
 > > ~~~
 > > inputs = keras.Input(shape=X_train.shape[1])
 > > hidden_layer = keras.layers.Dense(10, activation="relu")(inputs)
-> > output_layer = keras.layers.Dense(3, activation="softmax")(hidden_layer)
+> > output_layer = keras.layers.Dense(2, activation="softmax")(hidden_layer)
 > >
 > > model = keras.Model(inputs=inputs, outputs=output_layer)
 > > model.summary()
@@ -457,28 +489,28 @@ The model summary here can show you some information about the neural network we
 > > {:.language-python}
 > >
 > > ~~~
-> > Model: "model_1"
+> > Model: "model"
 > > _________________________________________________________________
 > > Layer (type)                 Output Shape              Param #
 > > =================================================================
-> > input_1 (InputLayer)         [(None, 4)]               0
+> > input_1 (InputLayer)         [(None, 10)]               0
 > > _________________________________________________________________
-> > dense (Dense)                (None, 10)                50
+> > dense (Dense)                (None, 10)                110
 > > _________________________________________________________________
-> > dense_1 (Dense)              (None, 3)                 33
+> > dense_1 (Dense)              (None, 2)                 22
 > > =================================================================
-> > Total params: 83
-> > Trainable params: 83
+> > Total params: 132
+> > Trainable params: 132
 > > Non-trainable params: 0
 > > _________________________________________________________________
 > > ~~~
 > > {:.output}
 > >
-> > The model has 83 trainable parameters.
+> > The model has 132 trainable parameters.
 > > If you increase the number of neurons in the hidden layer the number of
 > > trainable parameters in both the hidden and output layer increases or
 > > decreases accordingly of neurons.
-> > The name in quotes within the string `Model: "model_1"` may be different in your view; this detail is not important.
+> > The name in quotes within the string `Model: "model"` may be different in your view; this detail is not important.
 > {:.solution}
 {:.challenge}
 
@@ -499,7 +531,7 @@ A large number of openly available pretrained networks can be found in the [Mode
 
 ## 5. Choose a loss function and optimizer
 We have now designed a neural network that in theory we should be able to
-train to classify Penguins.
+train to classify our archeological finds.
 However, we first need to select an appropriate loss
 function that we will use during training.
 This loss function tells the training algorithm how wrong, or how 'far away' from the true
@@ -579,10 +611,9 @@ are problems that need to be addressed.
 {:.challenge}
 
 ## 7. Perform a prediction/classification
-Now that we have a trained neural network, we can use it to predict new samples
-of penguin using the `predict` function.
+Now that we have a trained neural network, we can use it to predict new samples using the `predict` function.
 
-We will use the neural network to predict the species of the test set
+We will use the neural network to predict the second level classification of the test set
 using the `predict` function.
 We will be using this prediction in the next step to measure the performance of our
 trained network.
@@ -595,49 +626,52 @@ prediction
 ~~~
 {:.language-python}
 > ## Output
+>~~~
+> Consumption: drinking	Food consumption: plate, dish, bowl
+> 0	1.192648e-18	9.999999e-01
+> 1	2.878897e-04	9.997121e-01
+> 2	9.933218e-01	6.678253e-03
+> 3	1.550273e-11	9.999999e-01
+> 4	9.999999e-01	1.860956e-36
+> ...	...	...
+> 599	4.948534e-01	5.051466e-01
+> 600	1.249560e-04	9.998751e-01
+> 601	1.192672e-03	9.988073e-01
+> 602	9.193144e-01	8.068555e-02
+> 603	1.893464e-01	8.106536e-01
 >
-> | --- | -------- | --------- | -------- |
-> | 0   | 0.304484 | 0.192893  | 0.502623 |
-> | 1   | 0.527107 | 0.095888  | 0.377005 |
-> | 2   | 0.373989 | 0.195604  | 0.430406 |
-> | 3   | 0.493643 | 0.154104  | 0.352253 |
-> | 4   | 0.309051 | 0.308646  | 0.382303 |
-> | ... | ...      | ...       | ...      |
-> | 64  | 0.406074 | 0.191430  | 0.402496 |
-> | 65  | 0.645621 | 0.077174  | 0.277204 |
-> | 66  | 0.356284 | 0.185958  | 0.457758 |
-> | 67  | 0.393868 | 0.159575  | 0.446557 |
-> | 68  | 0.509837 | 0.144219  | 0.345943 |
->
+> 604 rows × 2 columns
+> ~~~
+> {:.output}
 {:.solution}
 
-Remember that the output of the network uses the `softmax` activation function and has three
-outputs, one for each species. This dataframe shows this nicely.
+Remember that the output of the network uses the `softmax` activation function and has two
+outputs, one for each classification. This dataframe shows this nicely.
 
-We now need to transform this output to one penguin species per sample.
+We now need to transform this output to one classification type per sample.
 We can do this by looking for the index of highest valued output and converting that
-to the corresponding species.
+to the corresponding classification.
 Pandas dataframes have the `idxmax` function, which will do exactly that.
 
 ~~~
-predicted_species = prediction.idxmax(axis="columns")
-predicted_species
+predicted_class = prediction.idxmax(axis="columns")
+predicted_class
 ~~~
 {:.language-python}
 > ## Output
 > ~~~
-> 0     Gentoo
-> 1     Adelie
-> 2     Gentoo
-> 3     Adelie
-> 4     Gentoo
->        ...
-> 64    Adelie
-> 65    Adelie
-> 66    Gentoo
-> 67    Gentoo
-> 68    Adelie
-> Length: 69, dtype: object
+> 0      Food consumption: plate, dish, bowl
+> 1      Food consumption: plate, dish, bowl
+> 2                    Consumption: drinking
+> 3      Food consumption: plate, dish, bowl
+> 4                    Consumption: drinking
+>                       ...                 
+> 599    Food consumption: plate, dish, bowl
+> 600    Food consumption: plate, dish, bowl
+> 601    Food consumption: plate, dish, bowl
+> 602                  Consumption: drinking
+> 603    Food consumption: plate, dish, bowl
+> Length: 604, dtype: object
 > ~~~
 > {:.output}
 {:.solution}
@@ -647,11 +681,10 @@ Now that we have a trained neural network it is important to assess how well it 
 We want to know how well it will perform in a realistic prediction scenario, measuring
 performance will also come back when tuning the hyperparameters.
 
-We have created a test set during the data preparation stage which we will use
-now to create a confusion matrix.
+We have created a test set during the data preparation stage `X_test` and `y_test`, which we will use now to create a confusion matrix.
 
 ### Confusion matrix
-With the predicted species we can now create a confusion matrix and display it
+With the predicted classification we can now create a confusion matrix and display it
 using seaborn.
 To create a confusion matrix we will use another convenient function from sklearn
 called `confusion_matrix`.
@@ -662,22 +695,21 @@ The second parameter is the predicted labels which we did above.
 ~~~
 from sklearn.metrics import confusion_matrix
 
-true_species = y_test.idxmax(axis="columns")
+true_class = y_test.idxmax(axis="columns")
 
-matrix = confusion_matrix(true_species, predicted_species)
+matrix = confusion_matrix(true_class, predicted_class)
 print(matrix)
 ~~~
 {:.language-python}
 ~~~
-[[22  0  8]
- [ 5  0  9]
- [ 6  0 19]]
+[[169   6]
+ [  7 422]]
 ~~~
 {:.output}
 
 Unfortunately, this matrix is kinda hard to read. Its not clear which column and which row
-corresponds to which species.
-So let's convert it to a pandas dataframe with its index and columns set to the species
+corresponds to which class.
+So let's convert it to a pandas dataframe with its index and columns set to the classes
 as follows:
 
 ~~~
@@ -699,7 +731,7 @@ the heatmap.
 sns.heatmap(confusion_df, annot=True)
 ~~~
 {:.language-python}
-![Confusion matrix of the test set with high accuracy for Adelie and Gentoo classification and no correctly predicted Chinstrap][confusion_matrix]
+![Confusion matrix of the test set with high accuracy across the classes][confusion_matrix]
 
 > ## Confusion Matrix
 >
@@ -712,13 +744,12 @@ sns.heatmap(confusion_df, annot=True)
 >
 > > ## Solution
 > >
-> > The confusion matrix shows that the predictions for Adelie and Gentoo
-> > are decent, but could be improved. However, Chinstrap is not predicted
-> > ever.
+> > The confusion matrix shows that the predictions for the two classes are quite accurate, but could be improved.
 > >
 > > The training loss was very low, so from that perspective this may be
-> > surprising.
-> > But this illustrates very well why a test set is important when training
+> > expected.
+> > But always keep in mind that a good training loss does not ensure excellent
+> > performance on new data set. That is why a test set is important when training
 > > neural networks.
 > >
 > > We can try many things to improve the performance from here.
@@ -761,39 +792,12 @@ y_pretrained_pred = pretrained_model.predict(X_test)
 pretrained_prediction = pd.DataFrame(y_pretrained_pred, columns=target.columns.values)
 
 # idxmax will select the column for each row with the highest value
-pretrained_predicted_species = pretrained_prediction.idxmax(axis="columns")
-print(pretrained_predicted_species)
+pretrained_predicted_class = pretrained_prediction.idxmax(axis="columns")
+print(pretrained_predicted_class)
 ~~~
 {:.language-python}
-> ## Output
->
-> ~~~
-> 0     Adelie
-> 1     Gentoo
-> 2     Adelie
-> 3     Gentoo
-> 4     Gentoo
->        ...
-> 64    Gentoo
-> 65    Gentoo
-> 66    Adelie
-> 67    Adelie
-> 68    Gentoo
-> Length: 69, dtype: object
-> ~~~
-> {:.output}
-{:.solution}
 
 {% include links.md %}
-
-[neural-network]: https://upload.wikimedia.org/wikipedia/commons/4/46/Colored_neural_network.svg "Neural Network"
-{: width="25%"}
-
-[palmer-penguins]: ../fig/palmer_penguins.png "Palmer Penguins"
-{: width="50%"}
-
-[penguin-beaks]: ../fig/culmen_depth.png "Culmen Depth"
-{: width="50%"}
 
 [pairplot]: ../fig/pairplot.png "Pair Plot"
 {: width="66%"}
