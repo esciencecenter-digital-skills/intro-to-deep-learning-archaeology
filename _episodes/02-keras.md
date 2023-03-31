@@ -176,7 +176,7 @@ This will give you a pandas dataframe which contains the data.
 Now that we have familiarized ourselves with the dataset we can select the data attributes to use
 as input for the neural network and the target that we want to predict.
 
-> ## Choice of Input and Output=
+> ## Choice of Input and Output
 >
 > Inspect the dataset and identify suitable input features and output
 > > ## Solution
@@ -401,7 +401,7 @@ set_seed(2)
 
 ### Build a neural network from scratch
 
-We will now build out first neural network from scratch. Although this sounds like a daunting task, you will experience that #with Keras it is actually surprisingly straightforward.
+We will now build out first neural network from scratch. Although this sounds like a daunting task, you will experience that with Keras it is actually surprisingly straightforward.
 
 With Keras you compose a neural network by creating layers and linking them
 together. For now we will only use one type of layer called a fully connected
@@ -626,7 +626,7 @@ prediction
 ~~~
 {:.language-python}
 > ## Output
->
+>~~~
 > Consumption: drinking	Food consumption: plate, dish, bowl
 > 0	1.192648e-18	9.999999e-01
 > 1	2.878897e-04	9.997121e-01
