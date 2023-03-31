@@ -543,7 +543,7 @@ This loss function works well in combination with the `softmax` activation funct
 we chose earlier.
 The Categorical Crossentropy works by comparing the probabilities that the
 neural network predicts with 'true' probabilities that we generated using the one-hot encoding.
-This is a measure for how close the distribution of the three neural network outputs corresponds to the distribution of the three values in the one-hot encoding.
+This is a measure for how close the distribution of the two neural network outputs corresponds to the distribution of the two values in the one-hot encoding.
 It is lower if the distributions are more similar.
 
 For more information on the available loss functions in Keras you can check the
