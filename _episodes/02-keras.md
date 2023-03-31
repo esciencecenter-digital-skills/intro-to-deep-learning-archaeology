@@ -215,16 +215,6 @@ ds_preprocessed = ds_preprocessed.dropna()
 ~~~
 {:.language-python}
 
-> ## Pairplot: Visual Aid
-> Looking at numbers on a screen usually does not give a very good intuition about the data we are working with. So let us use a visualization tool called Pairplot which is useful for datasets with relatively few attributes.
-> This can be created using `sns.pairplot(...)` which can be imported from the seaborn package. It shows a scatterplot of each attribute plotted against each of the other attributes.
-> ~~~
-> import seaborn as sns
-> sns.pairplot(ds_preprocessed, hue = 'l2_class')
-> ~~~
-> {:.language-python}
-> ![Pairplot for our dataset][pairplot]
-
 ### Simplify output
 Let's explore the output classification column by looking at the number of data rows for each unique classification using the `value_counts` pandas function.
 ~~~
@@ -257,6 +247,16 @@ ds_preprocessed['l2_class'] = ds_preprocessed['l2_class'].astype('category')
 ~~~
 {:.language-python}
 This will make later interaction with this column a little easier.
+
+> ## Pairplot: Visual Aid
+> Looking at numbers on a screen usually does not give a very good intuition about the data we are working with. So let us use a visualization tool called Pairplot which is useful for datasets with relatively few attributes.
+> This can be created using `sns.pairplot(...)` which can be imported from the seaborn package. It shows a scatterplot of each attribute plotted against each of the other attributes.
+> ~~~
+> import seaborn as sns
+> sns.pairplot(ds_preprocessed, hue = 'l2_class')
+> ~~~
+> {:.language-python}
+> ![Pairplot for our dataset][pairplot]
 
 ### Prepare target data for training
 Second, the target data is also in a format that cannot be used in training.
