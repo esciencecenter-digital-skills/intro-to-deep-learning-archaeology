@@ -5,7 +5,7 @@ The use of Deep Learning has seen a sharp increase of popularity and applicabili
 
 We start with explaining the basic concepts of neural networks, and then go through the different steps of a Deep Learning workflow. Learners will learn how to prepare data for deep learning, how to implement a basic Deep Learning model in Python with Keras, how to monitor and troubleshoot the training process and how to implement different layer types such as convolutional layers.
 
-# Computer Applications in Arcaeology Workshops 2023
+# Computer Applications in Archaeology Workshops 2023
 
 In April 2023 the Computer Applications and Quantitative Methods in Archaeology (CAA) Conference was held in Amsterdam. In the context of this conference the introduction to deeplearing workshop was held twice. 
 
