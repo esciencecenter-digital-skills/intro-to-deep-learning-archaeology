@@ -34,7 +34,7 @@ keypoints:
 ## Introduction
 In this episode we will learn how to create and train a Neural Network using Keras to solve a simple classification task.
 
-The goal of this episode is to quickly get your hands dirty in actually defining and training a neural network, without going into depth of how neural networks work on a technical or mathematical level.
+The goal of this episode is to quickly get your hands dirty (no.. not from fieldwork) in actually defining and training a neural network, without going into depth of how neural networks work on a technical or mathematical level.
 We want you to go through the most commonly used deep learning workflow that was covered
 in the introduction.
 As a reminder below are the steps of the deep learning workflow:
@@ -59,10 +59,30 @@ In this episode we will focus on a minimal example for each of these steps, late
 > Using a GPU becomes necessary when tackling larger datasets or complex problems which
 > require a more complex Neural Network.
 {: .callout}
-## 1. Formulate/outline the problem: classification
-In this episode we will be using the below the surface [dataset](https://raw.githubusercontent.com/esciencecenter-digital-skills/deep-learning-archaeology/main/data/subset_ceramics_v29032023.csv), as presented before.
 
-We will use this dataset to train a neural network which can classify the second level of the functional classification of the archeological find, based on certain features.
+## 1. Formulate/outline the problem: classification
+In this episode we will be using a subset of the below the surface dataset of which the original dataset can be downloaded as csv file [here](https://belowthesurface.amsterdam/en/pagina/publicaties-en-datasets). 
+
+### Data processing
+To make the dataset suitable for an English Audience the column names have been translated from Dutch. Furthermore 
+
+Furthermore, the various fields in the dataset have been assessed ans classified in the following criteria:
+  - Adminstrative (e.g. find number, projectnumber, archaeological unit etc.)
+  - Measurement (length, weight, diameter etc. )
+  - Characteristic (characteristics of the object which does not necessaryly be done by an expert, like color or type of blade, decoration technique)
+  - Interpretation (Classification by an expert preferably to a reference collection / typochronology) 
+ 
+The classification was done on [this file](https://statics.belowthesurface.amsterdam/downloadbare-datasets/Data_fields_description.xlsx) from the project and based on doman knowledge by Maurice de Kleijn. The result of this assessment can be found [here](https://github.com/esciencecenter-digital-skills/deep-learning-archaeology/tree/main/data/description_fields.csv).
+  
+ *Note that the distinction between Characteristic and Interpretation is a bit arbitrary*
+
+For this workshop we decided to look at ceramics. Since the aim is to automatically categorize data based on a variety of characteristics we decided to look at ceramics and see if we can train a neural network that distinguishes ceramics that are cateogorized as "plate, dish, bowl" from ceramics that are categorized as "drinking" based on non interpreted measurements on the dimensions (i.e. height and width), surface treatment and type of material. We thus try to see if the experts could be replaced by our neural nework. Please note, that we have simplified the question and that we the aim of this analysis is purely educational. 
+
+The subest has been created based on the a python script, which can be accessed [here](temp.py)
+
+The subset that the script created can ben accessed [here]. **Please make sure to download this one (the other links are just a reference).**
+
+We will use this dataset to train a neural network which can classify the second level of the functional classification ( of the archeological artefect, based on certain features.
 
 > ## Goal
 > The goal is to predict the second level of functional classification using the attributes available in this dataset.
