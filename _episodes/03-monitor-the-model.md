@@ -22,6 +22,8 @@ keypoints:
 ---
 In this episode we will explore how to monitor the training progress, evaluate our the model predictions and finetune the model to avoid over-fitting. For that we will use a more complicated weather data-set.
 
+*We have considerded to adapt this course for an archaeological audience, however given the fact that it only a one day workshop we have not implemented and tested this. We did make a subset for Metal artefacts, of which our ideas for implementation can be found [here](https://github.com/esciencecenter-digital-skills/deep-learning-archaeology/tree/main/data), feel free to paly around with it.*
+
 ## 1. Formulate / Outline the problem: weather prediction
 
 Here we want to work with the *weather prediction dataset* (the light version) which can be
