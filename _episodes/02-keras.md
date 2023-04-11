@@ -78,9 +78,9 @@ The classification was done on [this file](https://statics.belowthesurface.amste
 
 For this workshop we decided to look at ceramics. Since the aim is to automatically categorize data based on a variety of characteristics we decided to look at ceramics and see if we can train a neural network that distinguishes ceramics that are cateogorized as "plate, dish, bowl" from ceramics that are categorized as "drinking" based on non interpreted measurements on the dimensions (i.e. height and width), surface treatment and type of material. We thus try to see if the experts could be replaced by our neural nework. Please note, that we have simplified the question and that we the aim of this analysis is purely educational. 
 
-The subest has been created based on the a python script, which can be accessed [here](temp.py)
+The subest has been created based on the a python script, which can be accessed [here](https://github.com/esciencecenter-digital-skills/intro-to-deep-learning-archaeology/blob/gh-pages/data/convert_rokin_data_for_dl_workshop.py)
 
-The subset that the script created can ben accessed [here]. **Please make sure to download this one (the other links are just a reference).**
+The subset that the script created can ben accessed [here](https://github.com/esciencecenter-digital-skills/intro-to-deep-learning-archaeology/blob/gh-pages/data/subset_ceramics_v30032023.csv)). **Please make sure to download this one (the other links are just a reference).**
 
 We will use this dataset to train a neural network which can classify the second level of the functional classification ( of the archeological artefect, based on certain features.
 
